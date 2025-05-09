@@ -16,7 +16,7 @@ void SendPacket()
 {
     Ptr<Packet> packet = Create<Packet> (1024); // 1024 bytes
     senderDevice->Send(packet, receiverAddress, protocolNumber);
-    NS_LOG_UNCOND ("[Classical] Packet sent at " << Simulator::Now ().GetSeconds () << " seconds");
+    std::cout << "[Classical] Packet sent at " << Simulator::Now ().GetSeconds () << " seconds" << "\n";
 }
 
 int main (int argc, char *argv[])
@@ -40,7 +40,7 @@ int main (int argc, char *argv[])
     auto result = measure(plus, gt.Z, {0});
     idx meas = std::get<0>(result);
 
-    NS_LOG_UNCOND("[Quantum] Measured |+⟩: " << meas);
+    std::cout << "[Quantum] Measured |+⟩: " << meas << "\n";
 
     if (meas == 1)
     {
@@ -48,7 +48,7 @@ int main (int argc, char *argv[])
     }
     else
     {
-        NS_LOG_UNCOND ("[Quantum] Measurement was 0, so no packet sent.");
+        std::cout << "[Quantum] Measurement was 0, so no packet sent.\n";
     }
 
     Simulator::Run();

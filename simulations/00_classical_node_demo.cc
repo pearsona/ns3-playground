@@ -16,17 +16,17 @@ void SendPacket()
     Ptr<Packet> packet = Create<Packet> (packetSize);
     uint32_t uid = packet->GetUid();
     senderDevice->Send(packet, receiverAddress, protocolNumber);
-    NS_LOG_UNCOND ("Packet UID " << uid << " scheduled and sent at " << Simulator::Now ().GetSeconds ());
+    std::cout << "Packet UID " << uid << " scheduled and sent at " << Simulator::Now ().GetSeconds () << "\n";
 }
 
 void TxCallback (Ptr<const Packet> packet)
 {
-    NS_LOG_UNCOND ("Packet UID " << packet->GetUid() << " physically transmitted at " << Simulator::Now ().GetSeconds ());
+    std::cout << "Packet UID " << packet->GetUid() << " physically transmitted at " << Simulator::Now ().GetSeconds () << "\n";
 }
 
 void RxCallback (Ptr<const Packet> packet)
 {
-    NS_LOG_UNCOND ("Packet UID " << packet->GetUid() << " physically received at " << Simulator::Now ().GetSeconds ());
+    std::cout << "Packet UID " << packet->GetUid() << " physically received at " << Simulator::Now ().GetSeconds () << "\n";
 }
 
 
@@ -41,7 +41,7 @@ void SchedulePackets()
 void ChangeDataRate(uint32_t time, float dataRate)
 {
     Simulator::Schedule (MilliSeconds (time), [dataRate] {
-        NS_LOG_UNCOND ("[Throttle] Changing DataRate to " << dataRate << " Mbps at " << Simulator::Now ().GetSeconds () << " seconds");
+        std::cout << "[Throttle] Changing DataRate to " << dataRate << " Mbps at " << Simulator::Now ().GetSeconds () << " seconds" << "\n";
 
         Config::Set ("/NodeList/0/DeviceList/0/$ns3::PointToPointNetDevice/DataRate", StringValue (std::to_string(dataRate) + "Mbps"));
         Config::Set ("/NodeList/1/DeviceList/0/$ns3::PointToPointNetDevice/DataRate", StringValue (std::to_string(dataRate) + "Mbps"));

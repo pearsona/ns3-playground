@@ -3,6 +3,8 @@
 #include "ns3/point-to-point-module.h"
 
 #include "qpp/qpp.hpp"
+#include <cstdlib>
+
 
 using namespace ns3;
 using namespace qpp;
@@ -15,7 +17,7 @@ uint16_t protocolNumber = 0x0800;
 void SendQubit()
 {
     ket psi = randket(2); // Random 1-qubit state
-    NS_LOG_UNCOND("[Quantum] Original state:");
+    std::cout << "[Quantum] Original state:" << "\n";
     std::cout << disp(psi) << std::endl;
 
     double re0 = std::real(psi(0));
@@ -31,16 +33,16 @@ void SendQubit()
     std::memcpy(buffer + 24, &im1, 8);
 
     Ptr<Packet> packet = Create<Packet>(buffer, 32);
-    NS_LOG_UNCOND("[NS-3] Created packet with UID " << packet->GetUid() << ", size: " << packet->GetSize() << " bytes");
+    std::cout << "[NS-3] Created packet with UID " << packet->GetUid() << ", size: " << packet->GetSize() << " bytes\n";
 
     senderDevice->Send(packet, receiverAddress, protocolNumber);
-    NS_LOG_UNCOND("[NS-3] Packet sent at " << Simulator::Now().GetSeconds() << " s\n\n");
+    std::cout << "[NS-3] Packet sent at " << Simulator::Now().GetSeconds() << " s\n\n";
 }
 
 void RxCallback (Ptr<const Packet> packet)
 {
-    NS_LOG_UNCOND("[NS-3] Packet UID " << packet->GetUid() << " received at " << Simulator::Now().GetSeconds() << " s");
-    NS_LOG_UNCOND("[NS-3] Packet size: " << packet->GetSize() << " bytes");
+    std::cout << "[NS-3] Packet UID " << packet->GetUid() << " received at " << Simulator::Now().GetSeconds() << " s\n";
+    std::cout << "[NS-3] Packet size: " << packet->GetSize() << " bytes" << "\n";
 
     uint8_t tempBuffer[34];
     uint8_t buffer[32];
@@ -58,7 +60,7 @@ void RxCallback (Ptr<const Packet> packet)
     received << cplx(re0, im0), cplx(re1, im1);
     received /= norm(received); // Normalize
 
-    NS_LOG_UNCOND("[Quantum] Reconstructed state:");
+    std::cout << "[Quantum] Reconstructed state:" << "\n";
     std::cout << disp(received) << "\n\n";
 }
 
