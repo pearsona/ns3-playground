@@ -38,10 +38,10 @@ void SchedulePackets()
     }
 }
 
-void throttle(uint32_t time, float dataRate)
+void ChangeDataRate(uint32_t time, float dataRate)
 {
     Simulator::Schedule (MilliSeconds (time), [dataRate] {
-        NS_LOG_UNCOND ("[Throttle] Reducing DataRate to " << dataRate << " Mbps at " << Simulator::Now ().GetSeconds () << " seconds");
+        NS_LOG_UNCOND ("[Throttle] Changing DataRate to " << dataRate << " Mbps at " << Simulator::Now ().GetSeconds () << " seconds");
 
         Config::Set ("/NodeList/0/DeviceList/0/$ns3::PointToPointNetDevice/DataRate", StringValue (std::to_string(dataRate) + "Mbps"));
         Config::Set ("/NodeList/1/DeviceList/0/$ns3::PointToPointNetDevice/DataRate", StringValue (std::to_string(dataRate) + "Mbps"));
@@ -73,13 +73,12 @@ int main (int argc, char *argv[])
     SchedulePackets();
 
     // Schedule throttling at 10ms
-    throttle(10, 1.0);
-    throttle(20, 0.05);
-    throttle(30, 50);
+    ChangeDataRate(10, 1.0);
+    ChangeDataRate(20, 0.05);
+    ChangeDataRate(30, 50);
 
     Simulator::Run ();
     Simulator::Destroy ();
 
-    std::clog << std::flush;
     return 0;
 }

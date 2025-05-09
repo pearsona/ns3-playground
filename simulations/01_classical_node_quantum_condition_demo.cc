@@ -7,7 +7,6 @@
 using namespace ns3;
 using namespace qpp;
 
-NS_LOG_COMPONENT_DEFINE ("QuantumConditionalSend");
 
 Ptr<NetDevice> senderDevice;
 Address receiverAddress;
@@ -55,6 +54,5 @@ int main (int argc, char *argv[])
     Simulator::Run();
     Simulator::Destroy();
 
-    std::clog << std::flush; // Ensure NS_LOG_UNCOND output is shown
     return 0;
 }
