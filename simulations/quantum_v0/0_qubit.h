@@ -1,5 +1,5 @@
 #pragma once
-#include "quantum_state.h"
+#include "0_quantum_state.h"
 
 class Qubit {
 public:

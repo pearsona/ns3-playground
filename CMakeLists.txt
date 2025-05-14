@@ -7,7 +7,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Include paths
 include_directories(
     ${CMAKE_SOURCE_DIR}/simulations
-    ${CMAKE_SOURCE_DIR}/simulations/quantum
+    ${CMAKE_SOURCE_DIR}/simulations/quantum_v0
+    ${CMAKE_SOURCE_DIR}/simulations/quantum_v1
 
     $ENV{HOME}/ns3-install/include
     ${CMAKE_SOURCE_DIR}/external/qpp/include
@@ -19,7 +20,8 @@ include_directories(
 link_directories($ENV{HOME}/ns3-install/lib)
 
 # Grab quantum sources
-file(GLOB QUANTUM_SRCS ${CMAKE_SOURCE_DIR}/simulations/quantum/*.cc)
+file(GLOB QUANTUM_SRCS ${CMAKE_SOURCE_DIR}/simulations/quantum_v0/*.cc)
+file(GLOB QUANTUM_SRCS ${CMAKE_SOURCE_DIR}/simulations/quantum_v1/*.cc)
 
 # Grab all simulation demos
 file(GLOB SIMS ${CMAKE_SOURCE_DIR}/simulations/*.cc)
@@ -30,6 +32,7 @@ foreach(f ${SIMS})
     target_link_libraries(${name}
         ns3.44-core
         ns3.44-network
+        ns3.44-internet
         ns3.44-point-to-point
     )
 endforeach()

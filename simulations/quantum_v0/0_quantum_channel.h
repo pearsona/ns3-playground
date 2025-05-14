@@ -1,6 +1,6 @@
 #pragma once
-#include "qubit.h"
-#include "quantum_node.h"
+#include "0_qubit.h"
+#include "0_quantum_node.h"
 
 #include "ns3/core-module.h"
 

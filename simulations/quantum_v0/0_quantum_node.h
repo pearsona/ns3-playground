@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "qpp/qpp.hpp"
-#include "qubit.h"
+#include "0_qubit.h"
 
 #include "ns3/core-module.h"
 

@@ -1,7 +1,7 @@
 #include "ns3/core-module.h"
 
-#include "quantum/quantum_channel.h"
-#include "quantum/quantum_node.h"
+#include "0_quantum_channel.h"
+#include "0_quantum_node.h"
 
 using namespace ns3;
 using namespace qpp;
