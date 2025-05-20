@@ -9,6 +9,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/simulations
     ${CMAKE_SOURCE_DIR}/simulations/quantum_v0
     ${CMAKE_SOURCE_DIR}/simulations/quantum_v1
+    ${CMAKE_SOURCE_DIR}/simulations/quantum_v2
 
     $ENV{HOME}/ns3-install/include
     ${CMAKE_SOURCE_DIR}/external/qpp/include
@@ -22,6 +23,7 @@ link_directories($ENV{HOME}/ns3-install/lib)
 # Grab quantum sources
 file(GLOB QUANTUM_SRCS ${CMAKE_SOURCE_DIR}/simulations/quantum_v0/*.cc)
 file(GLOB QUANTUM_SRCS ${CMAKE_SOURCE_DIR}/simulations/quantum_v1/*.cc)
+file(GLOB QUANTUM_SRCS ${CMAKE_SOURCE_DIR}/simulations/quantum_v2/*.cc)
 
 # Grab all simulation demos
 file(GLOB SIMS ${CMAKE_SOURCE_DIR}/simulations/*.cc)
