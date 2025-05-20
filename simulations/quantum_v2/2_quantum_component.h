@@ -5,6 +5,9 @@
 
 #include <memory>
 #include <vector>
+#include <functional>
+
+using QubitReceiveCallback = std::function<void(std::shared_ptr<Qubit>)>;
 
 namespace ns3 {
 
@@ -19,7 +22,7 @@ public:
 
     void StoreQubit(std::shared_ptr<Qubit> q);
     void RemoveQubit(std::shared_ptr<Qubit> q);
-    
+
 
     std::pair<std::shared_ptr<Qubit>, std::shared_ptr<Qubit>> CreateEntangledPair();
 
@@ -29,12 +32,14 @@ public:
     qpp::idx Measure(std::shared_ptr<Qubit> q);
 
     void AddDevice(Ptr<QuantumNetDevice> dev);
+    void SetReceiveCallback(QubitReceiveCallback cb);
 
     void PrintAllStates() const;
 
 private:
     std::vector<std::shared_ptr<Qubit>> qubits_;
     std::vector<Ptr<QuantumNetDevice>> m_netDevices;
+    QubitReceiveCallback receive_callback_;
 };
 
 }

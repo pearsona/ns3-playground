@@ -64,6 +64,11 @@ int main() {
     // Quantum components
     Ptr<QuantumComponent> qAlice = CreateObject<QuantumComponent>();
     Ptr<QuantumComponent> qBob = CreateObject<QuantumComponent>();
+    qBob->SetReceiveCallback([](std::shared_ptr<Qubit> q) {
+        std::cout << "[main] t = " << Simulator::Now().GetMicroSeconds()
+                  << "µs: Bob receives a qubit with ID '" << q->get_id() << "'\n";
+    }); // NOTE: This can go anytime before the simulation is actually run
+
     alice->AggregateObject(qAlice);
     bob->AggregateObject(qBob);
 

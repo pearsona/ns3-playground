@@ -52,7 +52,11 @@ std::pair<std::shared_ptr<Qubit>, std::shared_ptr<Qubit>> QuantumComponent::Crea
 void QuantumComponent::StoreQubit(std::shared_ptr<Qubit> q) {
     QuantumStateRegistry::instance().register_qubit(q);
     qubits_.push_back(q);
+    if (receive_callback_) {
+        receive_callback_(q);
+    }
 }
+
 
 void QuantumComponent::RemoveQubit(std::shared_ptr<Qubit> q) {
     QuantumStateRegistry::instance().unregister_qubit(q);
@@ -147,6 +151,11 @@ void QuantumComponent::AddDevice(Ptr<QuantumNetDevice> dev) {
     m_netDevices.push_back(dev);
     dev->SetComponent(this);
 }
+
+void QuantumComponent::SetReceiveCallback(QubitReceiveCallback cb) {
+    receive_callback_ = std::move(cb);
+}
+
 
 
 void QuantumComponent::PrintAllStates() const {
