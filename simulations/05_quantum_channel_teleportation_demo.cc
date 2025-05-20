@@ -92,12 +92,13 @@ int main() {
         // Alice creates an EPR pair and sends half to Bob
         std::cout << "[main] t = " << Simulator::Now().GetMicroSeconds() 
             << "µs: Alice creates entangled pair and sends half to Bob\n";
+
         auto [qA, qB] = qAlice->CreateEntangledPair();
         qB->set_id("teleport_target");
         devA->SendQubit(qB);
 
         // Alice prepares and measures her special state, psi
-        Simulator::Schedule(Simulator::Now() + NanoSeconds(2000), [=]() {
+        Simulator::Schedule(qChannel->GetDelay(), [=]() {
             std::cout << "[main] t = "<< Simulator::Now().GetMicroSeconds() 
                 << "µs: Alice prepares and measures psi\n";
 
@@ -110,18 +111,18 @@ int main() {
             qpp::idx m1 = qAlice->Measure(psi);
             qpp::idx m2 = qAlice->Measure(qA);
 
-            // Alice sends measurement results to Bob
+            // Alice sends measurement results to Bob (hardcoding 1000 ns for gates/measurements)
             // NOTE: Bob's corrections are built into the ReceiveCallback function
-            Simulator::Schedule(Simulator::Now() + NanoSeconds(100), [=]() {
+            Simulator::Schedule(qChannel->GetDelay() + NanoSeconds(1000), [=]() {
+                std::cout << "[main] t = " << Simulator::Now().GetMicroSeconds() 
+                << "µs: Alice sends measurement results\n";
+
                 Ptr<Socket> source = Socket::CreateSocket(alice, TypeId::LookupByName("ns3::UdpSocketFactory"));
                 InetSocketAddress remote = InetSocketAddress(interfaces.GetAddress(1), 8080);
                 source->Connect(remote);
 
                 uint8_t data[2] = {static_cast<uint8_t>(m1), static_cast<uint8_t>(m2)};
                 Ptr<Packet> packet = Create<Packet>(data, 2);
-
-                std::cout << "[main] t = " << Simulator::Now().GetMicroSeconds() 
-                    << "µs: Alice sends measurement results\n";
                 source->Send(packet);
             });
         });

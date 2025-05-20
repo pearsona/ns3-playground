@@ -25,6 +25,10 @@ void QuantumChannel::SetDelay(Time delay) {
     m_delay = delay;
 }
 
+Time QuantumChannel::GetDelay() const {
+    return m_delay;
+}
+
 void QuantumChannel::SetLossProbability(double loss) {
     m_lossProb = loss;
 }

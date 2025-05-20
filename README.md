@@ -5,6 +5,13 @@ This repository contains a set of simulation demos combining classical `ns-3` ne
 ## 🧠 Structure
 
 - `simulations/` — All simulation demos.
+- `simulations/quantum_v2/` — More mature, `ns3`-native quantum architecture:
+  - `2_quantum_component.h/.cc` — Represents qubit logic at the node level (creation, gates, measurement). Aggregated with `ns3::Node`.
+  - `2_qubit.h` — Lightweight handle for a single qubit, now with optional string ID.
+  - `2_quantum_state.h` — Pure quantum state logic (ket/density matrix abstraction).
+  - `2_quantum_state_registry.h/.cc` — Tracks global qubit-state associations to support entanglement and distributed updates.
+  - `2_quantum_channel.h/.cc` — Subclasses `ns3::Channel`, enabling quantum link delay, with pluggable future support for noise/loss.
+  - `2_quantum_net_device.h/.cc` — Subclass of `ns3::NetDevice`, connecting nodes to quantum channels. Integrates with `QuantumComponent`.
 - `simulations/quantum_v1/` — First iteration quantum components (beginning to integrate more fully into ns3):
   - `1_quantum_state.h` — Represents shared quantum state (1+ qubits).
   - `1_quantum_state_registry.h` - Tracks all quantum states across the network, which is necessary for proper tracking of qubits/states that are entangled but at different nodes.
@@ -44,11 +51,15 @@ The first fully quantum demo using custom `QuantumNode`, `QuantumChannel`, and `
 
 A proper demo of teleportation with transmission of both qubits and classical bits. This is the first demo where ns3 nodes actually contain quantum behavior via a `QuantumComponent` class that replaces the previous `QuantumNode` class. NOTE: `QuantumChannel` is still a distinct class that uses the ns3 simulator scheduling mechanism, but is not in fact part of ns3's hierarchy. Relies on `quantum_v1` files.
 
+### `05_quantum_channel_teleportation_demo.cc`
+
+A proper demo of teleportation with `QuantumChannel` as an actual subclass of ns3's `Channel` and `QuantumNetDevice` as a subclass of ns3's `NetDevice` (this is to mimic ns3's style AND to provide a potential framework for where transduction physics can go). Also added the ability to have qubit receive callbacks in the `QuantumComponent` `StoreQubit` method that is called when a component receives a qubit, similar to `ns3::Socket` receive handlers.
+
 ---
 
 ## 🔭 Next Steps
 
-- Build `QuantumChannel` into ns3 more properly.
+- Point-to-point-style helper for quantum links (`QuantumPointToPointHelper`) to simplify simulation configuration.
 - Adding gate and measurement duration logic with scheduling.
 - QKD demo and potentially class.
 - Valuable metrics like entanglement entropy, fidelity, etc.
@@ -57,6 +68,7 @@ A proper demo of teleportation with transmission of both qubits and classical bi
 - Add **entanglement-based protocols** (e.g., teleportation, superdense coding).
 - Support **multi-qubit states**, distributed tracking, and **entanglement swapping**.
 - Gradually transition to `*.cc`/`*.h` pairs and modular build for long-term scaling.
+- **Python bindings (proof-of-concept)** to test accessibility and automation potential.
 
 ---
 

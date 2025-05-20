@@ -11,7 +11,10 @@ public:
     static TypeId GetTypeId();
 
     QuantumChannel();
+    
     void SetDelay(Time delay);
+    Time GetDelay() const;
+
     void SetLossProbability(double loss);
 
     std::size_t GetNDevices() const override;
