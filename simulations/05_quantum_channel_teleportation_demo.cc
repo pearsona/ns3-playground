@@ -11,15 +11,16 @@
 
 using namespace ns3;
 
+
 // --- Free function for classical receive + correction ---
-static std::map<Ptr<Socket>, std::pair<Ptr<QuantumComponent>, std::shared_ptr<Qubit>>> g_socketContext;
-
 void ReceiveCallback(Ptr<Socket> socket) {
-
     std::cout << "[main] t = " << Simulator::Now().GetMicroSeconds() 
-        << "µs: Bob receives classical message and applies corrections\n";
+              << "µs: Bob receives classical message and applies corrections\n";
 
-    auto [qBob, qB] = g_socketContext[socket];
+    Ptr<Node> bob = socket->GetNode();
+    Ptr<QuantumComponent> qBob = bob->GetObject<QuantumComponent>();
+    auto qB = qBob->GetQubitById("teleport_target");
+
 
     Ptr<Packet> packet = socket->Recv();
     uint8_t data[2];
@@ -80,17 +81,17 @@ int main() {
     devA->Attach(qChannel);
     devB->Attach(qChannel);
 
-    // Teleportation
+    // Full Teleportation Protocol
     Simulator::Schedule(NanoSeconds(0), [=]() {
 
-        // Step 1: EPR pair + send one half
-        auto [qA, qB] = qAlice->CreateEntangledPair();
+        // Alice creates an EPR pair and sends half to Bob
         std::cout << "[main] t = " << Simulator::Now().GetMicroSeconds() 
             << "µs: Alice creates entangled pair and sends half to Bob\n";
-        g_socketContext[sink] = {qBob, qB};
+        auto [qA, qB] = qAlice->CreateEntangledPair();
+        qB->set_id("teleport_target");
         devA->SendQubit(qB);
 
-        // Step 2–3: Alice prepares and measures psi
+        // Alice prepares and measures her special state, psi
         Simulator::Schedule(Simulator::Now() + NanoSeconds(2000), [=]() {
             std::cout << "[main] t = "<< Simulator::Now().GetMicroSeconds() 
                 << "µs: Alice prepares and measures psi\n";
@@ -104,15 +105,16 @@ int main() {
             qpp::idx m1 = qAlice->Measure(psi);
             qpp::idx m2 = qAlice->Measure(qA);
 
-            // Send classical message to Bob
-            Ptr<Socket> source = Socket::CreateSocket(alice, TypeId::LookupByName("ns3::UdpSocketFactory"));
-            InetSocketAddress remote = InetSocketAddress(interfaces.GetAddress(1), 8080);
-            source->Connect(remote);
+            // Alice sends measurement results to Bob
+            // NOTE: Bob's corrections are built into the ReceiveCallback function
+            Simulator::Schedule(Simulator::Now() + NanoSeconds(100), [=]() {
+                Ptr<Socket> source = Socket::CreateSocket(alice, TypeId::LookupByName("ns3::UdpSocketFactory"));
+                InetSocketAddress remote = InetSocketAddress(interfaces.GetAddress(1), 8080);
+                source->Connect(remote);
 
-            uint8_t data[2] = {static_cast<uint8_t>(m1), static_cast<uint8_t>(m2)};
-            Ptr<Packet> packet = Create<Packet>(data, 2);
+                uint8_t data[2] = {static_cast<uint8_t>(m1), static_cast<uint8_t>(m2)};
+                Ptr<Packet> packet = Create<Packet>(data, 2);
 
-            Simulator::Schedule(Simulator::Now() + NanoSeconds(100), [source, packet]() {
                 std::cout << "[main] t = " << Simulator::Now().GetMicroSeconds() 
                     << "µs: Alice sends measurement results\n";
                 source->Send(packet);

@@ -18,12 +18,19 @@ TypeId QuantumComponent::GetTypeId() {
 
 QuantumComponent::QuantumComponent() = default;
 
-std::shared_ptr<Qubit> QuantumComponent::CreateQubit() {
-    auto state = std::make_shared<QuantumState>(1);
-    auto q = std::make_shared<Qubit>(0, state);
+std::shared_ptr<Qubit> QuantumComponent::CreateQubit(const std::string& id) {
+    auto q = std::make_shared<Qubit>(id);
     QuantumStateRegistry::instance().register_qubit(q);
     qubits_.push_back(q);
     return q;
+}
+
+std::shared_ptr<Qubit> QuantumComponent::GetQubitById(const std::string& id) const {
+    for (const auto& q : qubits_) {
+        if (q->get_id() == id)
+            return q;
+    }
+    return nullptr;
 }
 
 std::pair<std::shared_ptr<Qubit>, std::shared_ptr<Qubit>> QuantumComponent::CreateEntangledPair() {
@@ -33,6 +40,9 @@ std::pair<std::shared_ptr<Qubit>, std::shared_ptr<Qubit>> QuantumComponent::Crea
 
     auto q1 = std::make_shared<Qubit>(0, state);
     auto q2 = std::make_shared<Qubit>(1, state);
+
+    QuantumStateRegistry::instance().register_qubit(q1);
+    QuantumStateRegistry::instance().register_qubit(q2);
 
     StoreQubit(q1);
     StoreQubit(q2);

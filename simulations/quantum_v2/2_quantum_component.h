@@ -14,11 +14,14 @@ public:
 
     QuantumComponent();
 
-    std::shared_ptr<Qubit> CreateQubit();
-    std::pair<std::shared_ptr<Qubit>, std::shared_ptr<Qubit>> CreateEntangledPair();
+    std::shared_ptr<Qubit> CreateQubit(const std::string& id = "");
+    std::shared_ptr<Qubit> GetQubitById(const std::string& id) const;
+
     void StoreQubit(std::shared_ptr<Qubit> q);
-    
     void RemoveQubit(std::shared_ptr<Qubit> q);
+    
+
+    std::pair<std::shared_ptr<Qubit>, std::shared_ptr<Qubit>> CreateEntangledPair();
 
     void ApplyGate(const qpp::cmat& gate, const std::shared_ptr<Qubit>& q);
     void ApplyGate(const qpp::cmat& gate, const std::vector<std::shared_ptr<Qubit>>& qs);
